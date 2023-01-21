@@ -1,54 +1,36 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { Platform, StyleSheet, Text, View, Button } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { Platform, StyleSheet, Text, View, Button, TextInput } from 'react-native';
+
 
 export default function App() {
-  const [date, setDate] = useState(new Date(1598051730000));
-  const [mode, setMode] = useState('date');
-  const [show, setShow] = useState(false);
+  
+  const [weight, setWeight] = useState()
+  const [weightsList, setWeightsList] = useState([])
 
-  const onChange = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setShow(false);
-    setDate(currentDate);
-  };
-
-  const showMode = (currentMode) => {
-    if (Platform.OS === 'android') {
-      setShow(false);
-      // add button for iOS
-    }
-    setMode(currentMode);
-  }
-
-  const showDatepicker = () => {
-    showMode('date');
-    setShow(true);
-  }
-
-  const showTimepicker = () => {
-    showMode('time');
-    setShow(true);
+  const handlePress = (event) => {
+    const weightData = { date: new Date(), weight: weight }
+    console.log(weightData)
+    setWeightsList(prevWeightsList => [weightData, ...prevWeightsList])
+    console.log(weightsList)
+    setWeight()
   }
 
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-
-      <Button onPress={showDatepicker} title="Show date picker!" />
-      <Button onPress={showTimepicker} title="Show time picker!" />
-      <Text>selected: {date.toLocaleString()}</Text>
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          is24Hour={true}
-          onChange={onChange}
-        />
-      )}
-
+      <Text>Enter your weight</Text>
+      <TextInput
+        style={{height: 40}}
+        placeholder="Enter weight in kg"
+        onChangeText={newWeight => setWeight(newWeight)}
+        defaultValue={weight}
+      />
+      <Text>Your weight is {weight}. Boom boom</Text>
+      <Button
+        title="Add"
+        onPress={handlePress}
+      />
+      {weightsList && weightsList.map(weightItem => (<Text>{weightItem.date.toLocaleString()}: {weightItem.weight}</Text>))}
       <StatusBar style="auto" />
     </View>
   );
