@@ -1,108 +1,86 @@
-import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
-import { Platform, StyleSheet, Text, View, Button, TextInput,ScrollView, Dimensions } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
+import { StatusBar } from "expo-status-bar";
+import { useState, useEffect } from "react";
+import { StyleSheet, Text, View, Button, TextInput } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import TimeSeries from "./components/TimeSeries";
 
 export default function App() {
-  
-  const [weight, setWeight] = useState()
-  const [weightsList, setWeightsList] = useState([{date: new Date(), weight: 50}])
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem("@weightsList");
+      if (jsonValue != null) {
+        setWeightsList(JSON.parse(jsonValue));
+      } else {
+        setWeightsList([]);
+      }
+    } catch (e) {
+      // handle this
+    }
+  };
 
+  useEffect(() => getData, []);
 
-  
-  const weightX = weightsList.map(weightItem => weightItem.date)
-  const weightY = weightsList.map(weightItem => weightItem.weight)
+  const [weight, setWeight] = useState();
+  const [weightsList, setWeightsList] = useState([]);
 
-  console.log(weightX, weightY)
+  const weightX = weightsList.map((weightItem) => weightItem.date);
+  const weightY = weightsList.map((weightItem) => weightItem.weight);
 
-  const chartData = {
-    labels: weightX,
-    datasets:[{
-      data: weightY,
-      color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})` // optional
-    }]
-  }
-  const testData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-    datasets: [{
-      data: [
-        50,
-        20,
-        2,
-        86,
-        71,
-        100
-      ],
-      color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})` // optional
-    }]
-  }
+  const storeData = async () => {
+    try {
+      const jsonValue = JSON.stringify(weightsList);
+      await AsyncStorage.setItem("@weightsList", jsonValue);
+      const storedData = await AsyncStorage.getItem("@weightsList");
+      console.log(storedData);
+    } catch (e) {
+      // handle this
+    }
+  };
 
-  const testData2 = {
-    labels: weightX,
-    datasets: [{
-      data: weightY,
-      color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})` // optional
-    }]
-  }
-
-  const handlePress = (event) => {
-    const weightData = { date: new Date(), weight: weight }
-    console.log(weightData)
-    setWeightsList(prevWeightsList => [...prevWeightsList, weightData])
-    console.log(weightsList)
-    setWeight()
-  }
+  const handlePress = async () => {
+    const weightData = { date: new Date(), weight };
+    setWeightsList((prevWeightsList) => [...prevWeightsList, weightData]);
+    await storeData();
+    setWeight();
+  };
 
   return (
     <View style={styles.container}>
-      <View>
+      <StatusBar style="auto" />
+      <View style={styles.container}>
         <Text>Enter your weight</Text>
         <TextInput
-          style={{height: 40, borderWidth:0.5, borderRadius:8}}
+          style={{
+            height: 40,
+            width: 300,
+            borderWidth: 0.5,
+            borderRadius: 8,
+          }}
           placeholder="Enter weight in kg"
-          onChangeText={newWeight => setWeight(newWeight)}
+          onChangeText={(newWeight) => setWeight(newWeight)}
           defaultValue={weight}
+          inputMode="numeric"
+          keyboardType="numeric"
+          clearButtonMode="always"
+          returnKeyType="done"
         />
-        <Button
-          title="Add"
-          onPress={handlePress}
-        />
+        <Button title="Add" onPress={handlePress} />
 
         <Text>Your weight is {weight}. Boom boom</Text>
-        <View style={styles.container}>
-        <LineChart
-          verticalLabelRotation={90}
-          data={testData2}
-          width={Dimensions.get("window").width}
-          height={300}
-          yAxisSuffix="kg"
-          chartConfig={{
-            backgroundColor: "#e26a00",
-            backgroundGradientFrom: "#fb8c00",
-            backgroundGradientTo: "#ffa726",
-            decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
-              borderRadius: 16
-            },
-            propsForDots: {
-              r: "6",
-              strokeWidth: "2",
-              stroke: "#ffa726"
-            }
-          }}
-          bezier
-          style={{
-            marginVertical: 8,
-            borderRadius: 16,
-          }}
-        />
-        </View>
       </View>
 
-      {weightsList && weightsList.map(weightItem => (<Text key={weightItem.date.toLocaleString()}>{weightItem.date.toLocaleString()}: {weightItem.weight}</Text>))}
-      <StatusBar style="auto" />
+      <View style={styles.container}>
+        {weightsList.length != 0 && <TimeSeries x={weightX} y={weightY} />}
+      </View>
+
+      <View style={styles.container}>
+        {weightsList &&
+          weightsList.map((weightItem) => (
+            <Text key={weightItem.date.toLocaleString()}>
+              {weightItem.date.toLocaleString()}: {weightItem.weight}
+            </Text>
+          ))}
+      </View>
     </View>
   );
 }
@@ -110,8 +88,9 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    // borderWidth: 2,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
