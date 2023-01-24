@@ -70,7 +70,7 @@ export default function App() {
       </View>
 
       <View style={styles.container}>
-        {weightsList.length != 0 && <TimeSeries x={weightX} y={weightY} />}
+        {weightsList.length !== 0 && <TimeSeries x={weightX} y={weightY} />}
       </View>
 
       <View style={styles.container}>
