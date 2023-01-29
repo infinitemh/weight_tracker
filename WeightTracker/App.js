@@ -1,15 +1,23 @@
 import { StatusBar } from "expo-status-bar";
 import { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Button, TextInput } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import TimeSeries from "./components/TimeSeries";
+import DataInput from "./components/DataInput";
+// import uuid from 'react-native-uuid';
 
 export default function App() {
   const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem("@weightsList");
       if (jsonValue != null) {
-        setWeightsList(JSON.parse(jsonValue));
+        const jsonParsed = JSON.parse(jsonValue);
+        const jsonFormatted = jsonParsed.map((weightItem) => ({
+          date: Date.parse(weightItem.date),
+          weight: Number.parseFloat(weightItem.weight),
+        }));
+        setWeightsList(jsonFormatted);
+        // setWeightsList(JSON.parse(jsonValue));
       } else {
         setWeightsList([]);
       }
@@ -20,7 +28,7 @@ export default function App() {
 
   useEffect(() => getData, []);
 
-  const [weight, setWeight] = useState();
+  const [weight, setWeight] = useState("");
   const [weightsList, setWeightsList] = useState([]);
 
   const weightX = weightsList.map((weightItem) => weightItem.date);
@@ -37,41 +45,37 @@ export default function App() {
     }
   };
 
+  const handleChange = (newWeight) => setWeight(newWeight);
+
   const handlePress = async () => {
-    const weightData = { date: new Date(), weight };
+    const weightData = { date: new Date(), weight: Number.parseFloat(weight) };
     setWeightsList((prevWeightsList) => [...prevWeightsList, weightData]);
     await storeData();
-    setWeight();
+    setWeight("");
   };
 
   return (
     <View style={styles.container}>
       <StatusBar style="auto" />
-      <View style={styles.container}>
-        <Text>Enter your weight</Text>
-        <TextInput
-          style={{
-            height: 40,
-            width: 300,
-            borderWidth: 0.5,
-            borderRadius: 8,
-          }}
-          placeholder="Enter weight in kg"
-          onChangeText={(newWeight) => setWeight(newWeight)}
-          defaultValue={weight}
-          inputMode="numeric"
-          keyboardType="numeric"
-          clearButtonMode="always"
-          returnKeyType="done"
-        />
-        <Button title="Add" onPress={handlePress} />
+      <View className="flex justify-center">
+        <View className="max-w-sm rounded overflow-hidden shadow-lg">
+          <View className="px-6 py-4">
+            <Text className="font-bold text-xl mb-2">The Coldest Sunset</Text>
 
-        <Text>Your weight is {weight}. Boom boom</Text>
+            <Text className="text-gray-700 text-base">Some example</Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.container}>
         {weightsList.length !== 0 && <TimeSeries x={weightX} y={weightY} />}
       </View>
+
+      <DataInput
+        weight={weight}
+        handleChange={handleChange}
+        handlePress={handlePress}
+      />
 
       <View style={styles.container}>
         {weightsList &&
