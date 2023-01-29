@@ -1,9 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View, SafeAreaView, ScrollView } from "react-native";
+import { Card } from "@rneui/themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import TimeSeries from "./components/TimeSeries";
 import DataInput from "./components/DataInput";
+
 // import uuid from 'react-native-uuid';
 
 export default function App() {
@@ -55,46 +57,106 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <View className="flex justify-center">
-        <View className="max-w-sm rounded overflow-hidden shadow-lg">
-          <View className="px-6 py-4">
-            <Text className="font-bold text-xl mb-2">The Coldest Sunset</Text>
-
-            <Text className="text-gray-700 text-base">Some example</Text>
+    <SafeAreaView>
+      <ScrollView>
+        <StatusBar style="auto" />
+        {weightsList.length !== 0 && (
+          <View className="flex justify-center">
+            <Card>
+              <Card.Title>Graph</Card.Title>
+              <Card.Divider />
+              <View className="max-w-sm rounded overflow-hidden shadow-lg">
+                <View className="mx-auto">
+                  <View>
+                    <TimeSeries x={weightX} y={weightY} />
+                  </View>
+                </View>
+              </View>
+            </Card>
           </View>
+        )}
+        <View className="flex justify-center">
+          <Card>
+            <Card.Title>Add a new weight</Card.Title>
+            <Card.Divider />
+            <View className="max-w-sm rounded overflow-hidden shadow-lg">
+              <View className="px-6 py-4">
+                <DataInput
+                  weight={weight}
+                  handleChange={handleChange}
+                  handlePress={handlePress}
+                />
+              </View>
+            </View>
+          </Card>
         </View>
-      </View>
-
-      <View style={styles.container}>
-        {weightsList.length !== 0 && <TimeSeries x={weightX} y={weightY} />}
-      </View>
-
-      <DataInput
-        weight={weight}
-        handleChange={handleChange}
-        handlePress={handlePress}
-      />
-
-      <View style={styles.container}>
-        {weightsList &&
-          weightsList.map((weightItem) => (
-            <Text key={weightItem.date.toLocaleString()}>
-              {weightItem.date.toLocaleString()}: {weightItem.weight}
-            </Text>
-          ))}
-      </View>
-    </View>
+        <View className="flex justify-center">
+          <Card>
+            <Card.Title>History</Card.Title>
+            <Card.Divider />
+            <View className="max-w-sm rounded overflow-hidden shadow-lg">
+              <View className="px-6 py-4">
+                <View>
+                  {weightsList.length !== 0 ? (
+                    weightsList.map((weightItem) => (
+                      <Text key={weightItem.date.toLocaleString()}>
+                        {weightItem.date.toLocaleString()}: {weightItem.weight}
+                        kg
+                      </Text>
+                    ))
+                  ) : (
+                    <Text>Enter a weight to get history.</Text>
+                  )}
+                </View>
+              </View>
+            </View>
+          </Card>
+        </View>
+        <View className="flex justify-center">
+          <Card>
+            <Card.Title>History</Card.Title>
+            <Card.Divider />
+            <View className="max-w-sm rounded overflow-hidden shadow-lg">
+              <View className="px-6 py-4">
+                <View>
+                  {weightsList.length !== 0 ? (
+                    weightsList.map((weightItem) => (
+                      <Text key={weightItem.date.toLocaleString()}>
+                        {weightItem.date.toLocaleString()}: {weightItem.weight}
+                        kg
+                      </Text>
+                    ))
+                  ) : (
+                    <Text>Enter a weight to get history.</Text>
+                  )}
+                </View>
+              </View>
+            </View>
+          </Card>
+        </View>
+        <View className="flex justify-center">
+          <Card>
+            <Card.Title>History</Card.Title>
+            <Card.Divider />
+            <View className="max-w-sm rounded overflow-hidden shadow-lg">
+              <View className="px-6 py-4">
+                <View>
+                  {weightsList.length !== 0 ? (
+                    weightsList.map((weightItem) => (
+                      <Text key={weightItem.date.toLocaleString()}>
+                        {weightItem.date.toLocaleString()}: {weightItem.weight}
+                        kg
+                      </Text>
+                    ))
+                  ) : (
+                    <Text>Enter a weight to get history.</Text>
+                  )}
+                </View>
+              </View>
+            </View>
+          </Card>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // borderWidth: 2,
-    backgroundColor: "#ffffff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

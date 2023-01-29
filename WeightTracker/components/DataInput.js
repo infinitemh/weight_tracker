@@ -21,7 +21,7 @@ function DataInput({ weight, handleChange, handlePress }) {
       />
       <Button title="Add" onPress={handlePress} />
 
-      <Text className="text-blue-600">Your weight is {weight}. Boom boom</Text>
+      <Text className="text-red-600">Your weight is {weight}kg. Boom boom</Text>
     </View>
   );
 }

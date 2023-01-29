@@ -12,12 +12,15 @@ function TimeSeries({ x, y }) {
     ],
   };
 
+  const goodWidth = Dimensions.get("window").width * 0.8;
+  const goodHeight = goodWidth * (9 / 16);
+
   return (
     <LineChart
       verticalLabelRotation={90}
       data={chartData}
-      width={Dimensions.get("window").width}
-      height={Dimensions.get("window").height / 4}
+      width={goodWidth}
+      height={goodHeight}
       yAxisSuffix="kg"
       chartConfig={{
         backgroundColor: "#ffffff",
