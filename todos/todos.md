@@ -2,7 +2,7 @@
 - [X] Create line chart on main page
 - [X] Store form data in localstorage (JSON)
 - [X] Update chart to use localstorage
-- [ ] Add FlatList to history card
+- [X] Add FlatList to history card
     - [ ] Format the date to show as: Today, Yesterday, ...day of week, date string
 - [ ] Clicking on entry allows for modification of the entry
 - [ ] Add UUID and use in renderItem
