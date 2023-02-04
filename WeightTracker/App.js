@@ -14,8 +14,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import TimeSeries from "./components/TimeSeries";
 import DataInput from "./components/DataInput";
 
-// import uuid from 'react-native-uuid';
-
 export default function App() {
   const getData = async () => {
     try {
