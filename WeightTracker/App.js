@@ -25,7 +25,6 @@ export default function App() {
           weight: Number.parseFloat(weightItem.weight),
         }));
         setWeightsList(jsonFormatted);
-        // setWeightsList(JSON.parse(jsonValue));
       } else {
         setWeightsList([]);
       }
