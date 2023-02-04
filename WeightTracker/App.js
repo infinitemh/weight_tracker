@@ -1,6 +1,14 @@
 import { StatusBar } from "expo-status-bar";
 import { useState, useEffect } from "react";
-import { Text, View, SafeAreaView, ScrollView } from "react-native";
+import {
+  Text,
+  View,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  FlatList,
+  StyleSheet,
+} from "react-native";
 import { Card } from "@rneui/themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import TimeSeries from "./components/TimeSeries";
@@ -56,10 +64,14 @@ export default function App() {
     setWeight("");
   };
 
+  const statusbarStyle =
+    Platform.OS === "android" ? styles.androidStatusBar : "";
+
   return (
     <SafeAreaView>
+      <StatusBar style="auto" />
+      <View style={statusbarStyle} />
       <ScrollView>
-        <StatusBar style="auto" />
         {weightsList.length !== 0 && (
           <View className="flex justify-center">
             <Card>
@@ -90,73 +102,42 @@ export default function App() {
             </View>
           </Card>
         </View>
-        <View className="flex justify-center">
-          <Card>
-            <Card.Title>History</Card.Title>
-            <Card.Divider />
-            <View className="max-w-sm rounded overflow-hidden shadow-lg">
-              <View className="px-6 py-4">
-                <View>
-                  {weightsList.length !== 0 ? (
-                    weightsList.map((weightItem) => (
-                      <Text key={weightItem.date.toLocaleString()}>
-                        {weightItem.date.toLocaleString()}: {weightItem.weight}
-                        kg
-                      </Text>
-                    ))
-                  ) : (
-                    <Text>Enter a weight to get history.</Text>
-                  )}
-                </View>
-              </View>
-            </View>
-          </Card>
-        </View>
-        <View className="flex justify-center">
-          <Card>
-            <Card.Title>History</Card.Title>
-            <Card.Divider />
-            <View className="max-w-sm rounded overflow-hidden shadow-lg">
-              <View className="px-6 py-4">
-                <View>
-                  {weightsList.length !== 0 ? (
-                    weightsList.map((weightItem) => (
-                      <Text key={weightItem.date.toLocaleString()}>
-                        {weightItem.date.toLocaleString()}: {weightItem.weight}
-                        kg
-                      </Text>
-                    ))
-                  ) : (
-                    <Text>Enter a weight to get history.</Text>
-                  )}
-                </View>
-              </View>
-            </View>
-          </Card>
-        </View>
-        <View className="flex justify-center">
-          <Card>
-            <Card.Title>History</Card.Title>
-            <Card.Divider />
-            <View className="max-w-sm rounded overflow-hidden shadow-lg">
-              <View className="px-6 py-4">
-                <View>
-                  {weightsList.length !== 0 ? (
-                    weightsList.map((weightItem) => (
-                      <Text key={weightItem.date.toLocaleString()}>
-                        {weightItem.date.toLocaleString()}: {weightItem.weight}
-                        kg
-                      </Text>
-                    ))
-                  ) : (
-                    <Text>Enter a weight to get history.</Text>
-                  )}
-                </View>
-              </View>
-            </View>
-          </Card>
-        </View>
       </ScrollView>
+      <View className="flex justify-center">
+        <Card>
+          <Card.Title>History</Card.Title>
+          <Card.Divider />
+          <View className="max-w-sm rounded overflow-hidden shadow-lg">
+            <View className="px-6 py-4">
+              <View>
+                {weightsList.length !== 0 ? (
+                  <FlatList
+                    data={weightsList}
+                    renderItem={({ item }) => (
+                      <Text>
+                        {item.date.toLocaleString()}: {item.weight} kg
+                      </Text>
+                    )}
+                    keyExtractor={(item) => item.date.toLocaleString()}
+                  />
+                ) : (
+                  <Text>Enter a weight to get history.</Text>
+                )}
+              </View>
+            </View>
+          </View>
+        </Card>
+      </View>
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  androidStatusBar: {
+    paddingTop: 24,
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
