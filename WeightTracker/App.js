@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { Card } from "@rneui/themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from "moment/moment";
 import TimeSeries from "./components/TimeSeries";
 import DataInput from "./components/DataInput";
 
@@ -45,8 +46,10 @@ export default function App() {
     try {
       const jsonValue = JSON.stringify(weightsList);
       await AsyncStorage.setItem("@weightsList", jsonValue);
-      const storedData = await AsyncStorage.getItem("@weightsList");
-      console.log(storedData);
+      // const storedData = await AsyncStorage.getItem("@weightsList");
+      AsyncStorage.getItem("@weightsList")
+        .then((value) => console.log(value))
+        .catch((error) => console.log(error));
     } catch (e) {
       // handle this
     }
@@ -112,7 +115,8 @@ export default function App() {
                     data={weightsList}
                     renderItem={({ item }) => (
                       <Text>
-                        {item.date.toLocaleString()}: {item.weight} kg
+                        {moment(item.date.toLocaleString()).calendar()}:{" "}
+                        {item.weight} kg
                       </Text>
                     )}
                     keyExtractor={(item) => item.date.toLocaleString()}
