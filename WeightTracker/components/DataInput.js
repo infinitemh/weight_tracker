@@ -13,6 +13,7 @@ function DataInput({ weight, handleChange, handlePress }) {
         }}
         placeholder="Enter weight in kg"
         onChangeText={(newWeight) => handleChange(newWeight)}
+        onSubmitEditing={handlePress}
         value={weight}
         inputMode="numeric"
         keyboardType="numeric"
