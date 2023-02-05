@@ -3,9 +3,9 @@
 - [X] Store form data in localstorage (JSON)
 - [X] Update chart to use localstorage
 - [X] Add FlatList to history card
-    - [ ] Format the date to show as: Today, Yesterday, ...day of week, date string
+    - [X] Format the date to show as: Today, Yesterday, ...day of week, date string
+- [X] Add UUID and use in renderItem
 - [ ] Clicking on entry allows for modification of the entry
-- [ ] Add UUID and use in renderItem
 - [ ] Pressing "tick" button from keypad on Android/iOS should trigger event handler
 - [ ] Button to delete entry
 - [ ] Data validation
