@@ -12,6 +12,7 @@ import {
 import { Card } from "@rneui/themed";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment/moment";
+import uuid from "react-native-uuid";
 import TimeSeries from "./components/TimeSeries";
 import DataInput from "./components/DataInput";
 
@@ -22,6 +23,7 @@ export default function App() {
       if (jsonValue != null) {
         const jsonParsed = JSON.parse(jsonValue);
         const jsonFormatted = jsonParsed.map((weightItem) => ({
+          ...weightItem,
           date: Date.parse(weightItem.date),
           weight: Number.parseFloat(weightItem.weight),
         }));
@@ -58,7 +60,11 @@ export default function App() {
   const handleChange = (newWeight) => setWeight(newWeight);
 
   const handlePress = async () => {
-    const weightData = { date: new Date(), weight: Number.parseFloat(weight) };
+    const weightData = {
+      id: uuid.v4(),
+      date: new Date(),
+      weight: Number.parseFloat(weight),
+    };
     setWeightsList((prevWeightsList) => [...prevWeightsList, weightData]);
     await storeData();
     setWeight("");
@@ -119,7 +125,7 @@ export default function App() {
                         {item.weight} kg
                       </Text>
                     )}
-                    keyExtractor={(item) => item.date.toLocaleString()}
+                    keyExtractor={(item) => item.id}
                   />
                 ) : (
                   <Text>Enter a weight to get history.</Text>
